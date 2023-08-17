@@ -46,7 +46,11 @@ while running:
             print('5 secs kill')
             dots = Death.kill_left(dots)
             
-        if (time_since_enter>5000):
+        if (time_since_enter>3000):
+            print('new life')
+            dots = Death.create_life(dots,num_dots)
+            
+        if (time_since_enter>8000):
             print('bye')
             running = False
     for dot in dots:
