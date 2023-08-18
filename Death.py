@@ -30,19 +30,78 @@ def kill_left(dots):
         #dots.remove(dots[i])
         
     return dots
-                       
-def create_life(dots,n):
+
+def gene_pool(dots):
     if (dots!=list):
-        oglen = n
-        newlen = len(dots)
-        ncreate = n - len(dots)
+        oldpool = []
+        newpool = []
+        gene_evolution = {}
+        ndots = len(dots)
+        
+        for i in range(ndots):
+            dotself = dots[i].__dict__
+            genomes_ = dotself['genome'].__dict__
+            genomes = genomes_['genome']
+            
+            oldpool.extend(genomes)
+    return oldpool
+
+
+def create_life(dots,n,pool,mutprob = 10/10):
+    if (dots!=list):
+        ndots = n
+        nsurvive = len(dots)
+        ncreate = ndots - nsurvive
+        newdots = []
+        newpool = []
+        
         dotself = dots[0].__dict__
         width = dotself['screen_width']
         height = dotself['screen_height']
         nsense = dotself['no_sensory_neurons']
         nact = dotself['no_action_neurons']
         nint = dotself['no_internal_neurons']
+        #genome = dotself['genome'].__dict__['genome']
+        
+        # create genome object to store the genomes of all creatures
+        # to be mutated simultaneously. Since the Genome class is the
+        # only thing that can mutate, requiring a genome object, we 
+        # have to turn the entire gene pool into a genome object, with
+        # the number of genes equal to the number of survivors times
+        # the number of genes within a creature
+        
+        genomelen = dotself['genome'].__dict__['no_genes']
+        allgenomes = Genome(nsurvive*genomelen)
+        
+        allgenomes.genome = pool
+        #print(allgenomes.genome[:10])
+        allgenomes.mutate(mutprob)
+        #print(allgenomes.genome[:10])
+        #newdots = [Dot(nsense, nact, nint, width, height) for _ in range(ncreate)]
+        newpool = allgenomes.genome
+        
+        for i in range(ncreate):
+            geninds = np.random.randint(0,len(newpool),size=4)
+            newgens = list(np.array(newpool)[geninds])
+            newdot = Dot(nsense,nact,nint,width,height,genomes=newgens)
             
-        newdots = [Dot(nsense, nact, nint, width, height) for _ in range(ncreate)]
+            newdots.append(newdot)
+            """
+            dotself = dots[i].__dict__
+            genomes_ = dotself['genome'].__dict__
+            genomes = genomes_['genome']
+
+            # Test the genome generation works
+            genome = Genome(4)
+            genome.genome = new
+            #print("Generating Genome: ")
+            #print(genome.get_genome())
+
+            print("Mutating Genome")
+            genome.mutate(10/10)
+            print(genome.get_genome())
+            """
         dots.extend(newdots)
+        
+
     return dots

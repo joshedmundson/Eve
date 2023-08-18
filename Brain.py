@@ -44,7 +44,7 @@ class Brain:
         None
         '''
         # Iterate through the genome
-        for gene in self.genome.get_genome():
+        for gene in self.genome.genome:
             # Decode the gene
             input_neuron, output_neuron, weight = self.decode_gene(gene)
             # Connect the neurons
@@ -98,18 +98,23 @@ class Brain:
         m_1 = self.cortex[self.no_action_neurons : , 
                           : self.no_sensory_neurons] 
         internal_neurons = np.dot(m_1, sensory_input)
-        
+        #print('M-1',m_1)
+        #print('sensory input', sensory_input, 'internal neurons', internal_neurons)
         # Step 2: Update interal neurons using other internal neurons
         m_2 = self.cortex[self.no_action_neurons : , 
                           self.no_sensory_neurons : ]
         internal_neurons += np.dot(m_2, internal_neurons)
-        
+        #print('M-2',m_2)
+        #print('sensory input', sensory_input, 'internal neurons', internal_neurons)
+
         # Step 3: Update action neurons using all sensory neurons and internal neurons
         m_3 = self.cortex[: self.no_sensory_neurons, 
                           : ]
         
         outputs = np.dot(m_3, np.concatenate((sensory_input, internal_neurons)))
-        
+        #print('M-3',m_3)
+        #print('sensory input', sensory_input, 'output', outputs)
+        #print(np.tanh(outputs))
         # Step 4: Apply tanh as an activation function to the outputs
         return np.tanh(outputs) 
         

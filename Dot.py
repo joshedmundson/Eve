@@ -26,7 +26,7 @@ class Dot():
     '''
 
     def __init__(self, no_sensory_neurons, no_action_neurons, 
-                 no_internal_neurons, screen_width, screen_height):
+                 no_internal_neurons, screen_width, screen_height, genomes = None):
         # Initiate positions 
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -35,16 +35,23 @@ class Dot():
         # Initiate speeds
         self.speed = 3
         # Initiate colour 
-        self.colour = (random.randint(0, 255), 
-                       random.randint(0, 255), 
-                       random.randint(0, 255))
+        #self.colour = (random.randint(0, 255), 
+        #               random.randint(0, 255), 
+        #               random.randint(0, 255))
         # Create brain
-        self.genome = Genome(4)
+        if (genomes==None):
+            self.genome = Genome(4)
+        else:
+            self.genome = Genome(4)
+            self.genome.genome = genomes
         self.no_sensory_neurons = no_sensory_neurons
         self.no_action_neurons = no_action_neurons
         self.no_internal_neurons = no_internal_neurons
         self.brain = Brain(self.genome, self.no_sensory_neurons, 
                            self.no_action_neurons, self.no_internal_neurons)
+        
+        #rand = np.random.randint(0,len(self.genome.genome))
+        self.colour = '#'+str(self.genome.genome[0][:6])
 
     def move(self):
         '''
@@ -53,6 +60,7 @@ class Dot():
         Returns:
         None
         '''
+        randdir = np.random.randint(0,1)
         direction = self.brain.think(self.position)
         new_x = self.position[0] + (self.speed * direction[0])
         new_y = self.position[1] + (self.speed * direction[1])
@@ -75,4 +83,4 @@ class Dot():
         '''
         pygame.draw.circle(screen, self.colour, 
                            (int(self.position[0]), 
-                            int(self.position[1])), 1)
+                            int(self.position[1])), 3)
