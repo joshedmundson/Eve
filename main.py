@@ -2,10 +2,10 @@ from re import I
 import pygame
 import random
 from Dot import Dot
-import Death
 import numpy as np
 import csv
 import pickle as pkl
+from Population import Population
 
 # Initialize pygame
 pygame.init()
@@ -19,17 +19,19 @@ pygame.display.set_caption("Evolution Simulation")
 white = (255, 255, 255)
 dot_color = (0, 0, 255)
 
-# Create a list of dots
-num_dots = 1000
-dots = [Dot(2, 2, 2, width, height) for _ in range(num_dots)]
-pool_evo = {}
+# Create a Population of Dots
+dot_population = Population(1000, 2, 2, 4, width, height, mutprob=1/100)
+
+# Define the cull condition 
+def cull_left(dot):
+    return dot.position[0] > width/2
 
 # Main loop
 running = True
 clock = pygame.time.Clock()
 start_time = True
 
-dtime = 1000
+dtime = 10000
 gen = 0
 
 while running:
@@ -50,21 +52,10 @@ while running:
         
         t = time_since_enter
         if ((t%dtime>0)&(t%dtime<50)):
-            print('kill time')
-        #if ((time_since_enter>2000)&(time_since_enter<2100)):
-            #print('5 secs kill')
-            dots = Death.kill_left(dots)
+            print('next generation')
+            dot_population.next_generation(cull_left)
             
-        #if ((time_since_enter>2100)&(time_since_enter<2200)):
-            print('new life')
-            pool = Death.gene_pool(dots)
-            dots = Death.create_life(dots,num_dots,pool,mutprob=5/10)
-            pool_evo['Generation ' + str(gen)] = pool
-            gen+=1
-        if (time_since_enter>18000):
-            print('bye')
-            running = False
-    for dot in dots:
+    for dot in dot_population.population:
         #print(i)
         #i=+1
         dot.move()
@@ -73,10 +64,10 @@ while running:
     pygame.display.flip()
     clock.tick(30)  # Limit frame rate to 60 FPS
     
-keys = pool_evo.keys()
-filename = open('pool_evo.pkl','wb')
-pkl.dump(pool_evo,filename)
-filename.close()
+#keys = pool_evo.keys()
+#filename = open('pool_evo.pkl','wb')
+#pkl.dump(pool_evo,filename)
+#filename.close()
 #print(pool_evo['Generation 0'])
 """
 with open('Pool_evolution.csv', 'w') as csvfile:

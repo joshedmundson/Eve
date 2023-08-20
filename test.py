@@ -2,6 +2,7 @@ from Genome import Genome
 from Brain import Brain 
 import random
 import numpy as np
+from Population import Population
 
 # Test the genome generation works
 genome = Genome(8)
@@ -21,3 +22,6 @@ print(brain.cortex)
 # Test the brain's ability to process information 
 sensory_inputs = np.array([1,7])
 print(brain.think(sensory_inputs))
+
+# Test population creation 
+dot_pop = Population(10, 2, 2, 2, 800, 600)

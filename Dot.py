@@ -1,4 +1,5 @@
-import random 
+import random
+from tkinter import SE 
 from Genome import Genome
 import numpy as np
 from Brain import Brain
@@ -26,7 +27,7 @@ class Dot():
     '''
 
     def __init__(self, no_sensory_neurons, no_action_neurons, 
-                 no_internal_neurons, screen_width, screen_height, genomes = None):
+                 no_internal_neurons, screen_width, screen_height, genome = None):
         # Initiate positions 
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -34,16 +35,13 @@ class Dot():
                                   random.randint(0, self.screen_height)])
         # Initiate speeds
         self.speed = 3
-        # Initiate colour 
-        #self.colour = (random.randint(0, 255), 
-        #               random.randint(0, 255), 
-        #               random.randint(0, 255))
+ 
         # Create brain
-        if (genomes==None):
+        if genome == None:
             self.genome = Genome(4)
         else:
-            self.genome = Genome(4)
-            self.genome.genome = genomes
+            self.genome = genome
+        print(self.genome.get_genome())
         self.no_sensory_neurons = no_sensory_neurons
         self.no_action_neurons = no_action_neurons
         self.no_internal_neurons = no_internal_neurons
@@ -60,7 +58,6 @@ class Dot():
         Returns:
         None
         '''
-        randdir = np.random.randint(0,1)
         direction = self.brain.think(self.position)
         new_x = self.position[0] + (self.speed * direction[0])
         new_y = self.position[1] + (self.speed * direction[1])
