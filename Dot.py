@@ -42,7 +42,7 @@ class Dot():
         
         # Create brain
         if genome == None:
-            self.genome = Genome(10)
+            self.genome = Genome(14)
         else:
             self.genome = genome
         #print(self.genome.get_genome())
@@ -94,28 +94,34 @@ class Dot():
         
         '''
         foods = []
-        for i in range(len(food)):
-            foods.append(food[i].position)
-            
+        #for i in (food.allfoods):
+        #    foods.append(i)
+        foods = food.allfoods 
+        #print('feed', foods)
         foodloc = np.asarray(foods)
         dist = np.sum((foodloc - self.position)**2,axis=1)
         find = np.argmin(dist)
+        #print(find)
         food_ = foodloc[find]
         dotpos = self.position
         dire = list(dotpos)
         (dire).extend(food_)
+        dire.append(self.hunger)
         
         # Sending sensory input to brain based on dot and food location
         self.move(direct=dire)
         
         xfood = list(np.arange(food_[0]-3,food_[0]+3,1))
         yfood = list(np.arange(food_[1]-3,food_[1]+3,1))
+        #print(xfood,self.position[0])
         xpos = self.position[0]
         ypos = self.position[1]
         
         if((xpos in xfood) & (ypos in yfood)):
             self.hunger=self.hunger+3
-            del food[find]
+            #print('eat')
+            #del food.allfoods[find]
+            food.allfoods = np.delete(foods,find,0)
 
     def display(self, screen):
         '''

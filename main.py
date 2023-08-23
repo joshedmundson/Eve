@@ -23,22 +23,23 @@ white = (255, 255, 255)
 dot_color = (0, 0, 255)
 
 # Create a Population of Dots
-dot_population = Population(500, 4, 2, 4, width, height, mutprob=10/100)
-food_pop = [Food(width, height) for _ in range(nfood)]
+gen = 0
+dot_population = Population(500, 5, 2, 6, width, height, mutprob=20/100)
+#food_pop = [Food(width, height) for _ in range(nfood)]
+food_pop = Food(gen,width,height)
 
 # Define the cull condition 
 def cull_left(dot):
     return dot.position[0] > width/2
 def starve(dot):
-    return dot.hunger>3
+    return dot.hunger>1
 
 # Main loop
 running = True
 clock = pygame.time.Clock()
 start_time = True
 
-dtime = 6000
-gen = 0
+dtime = 10000
 runs = 0
 
 while running:
@@ -62,15 +63,18 @@ while running:
         t = time_since_enter
         #if ((t%dtime>0)&(t%dtime<200)):
         if (runs%50==0):
+            gen+=1
             print('next generation')
             print(runs)
             print('survivors',len(dot_population.population))
             #dot_population.next_generation(cull_left)
             dot_population.reproduce()
-            food_pop = [Food(width, height) for _ in range(nfood)]
+            food_pop = Food(gen,width,height)
+            #food_pop = [Food(width, height) for _ in range(nfood)]
     
-    for fd in food_pop:
-        fd.display(screen)  
+    food_pop.display_all(screen)
+    #for fd in food_pop:
+        #fd.display(screen)  
         #print(len(food_pop))
     for dot in dot_population.population:
 
